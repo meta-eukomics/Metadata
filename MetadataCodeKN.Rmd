@@ -1,0 +1,96 @@
+---
+title: "Meta-eukomic Metadata Code"
+author: "Kayla A. Nedd"
+date: "2024-10-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Set up working environment
+```{r}
+library(tidyverse)
+```
+
+# Import data
+```{r}
+metadata <- read.csv("~/Documents/GitHub/Metaeukomic2024/Metadata_Compilation_RNAProtocols.csv")
+trimmedseqs <- read.delim("~/Documents/GitHub/Metaeukomic2024/trimmed_multiqc_general_stats.txt")
+```
+
+# RIN vs Total RNA Yield
+```{r}
+ggplot(data = metaeukomics) + geom_point(mapping = aes(x = RIN, y = Total.RNA.yield..ug., fill = Extraction.Protocol, color = Extraction.Protocol)) +
+  labs(title = "RIN vs. Total RNA Yield", x = "RIN", y = "Total RNA Yield (ug)") +
+  theme(plot.title = element_text(size = 18, hjust = 0.5)) 
+```
+
+# Plot- Trimmed Sequences: FastQC Percent GC Content
+```{r}
+ggplot(trimmedseqs, aes(x = Sample, y = FastQC_mqc.generalstats.fastqc.percent_gc)) +
+  geom_bar(stat = "identity", position = "stack", fill = "cornflowerblue", color = "black", width = NULL) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1.0, size = 10),
+        axis.text.y = element_text (size = 12)) + 
+  theme(plot.title = element_text(size = 16, hjust = 0.5)) +
+  theme(panel.background = element_rect(fill = "white")) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) + labs(title = "GC Content within Trimmed Sequences", x = "Sample", y = "Percent GC Content")
+```
+
+# Plot- FastQC Percent Duplicates
+```{r}
+ggplot(trimmedseqs, aes(x = Sample, y = FastQC_mqc.generalstats.fastqc.percent_duplicates)) +
+  geom_bar(stat = "identity", position = "stack", fill = "lightblue", color = "black", width = NULL) +  
+  labs(title = "Sample FastQC Duplicates", x = "Sample", y = "Percent Duplicates") + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1.0, size = 10),
+       axis.text.y = element_text (size = 12)) + 
+  theme(plot.title = element_text(size = 16, hjust = 0.5)) +
+  theme(panel.background = element_rect(fill = "white")) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+```
+
+
+# Plot- Fast QC Total Sequences
+```{r}
+ggplot(trimmedseqs, aes(x = Sample, y = FastQC_mqc.generalstats.fastqc.total_sequences)) +
+  geom_bar(stat = "identity", position = "stack", fill = "azure", color = "black", width = NULL) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1.0, size = 10),
+        axis.text.y = element_text (size = 12)) + 
+  theme(plot.title = element_text(size = 16, hjust = 0.5)) +
+  theme(panel.background = element_rect(fill = "white")) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) + 
+  labs(title = "Total Sequences", x = "Sample", y = "Number of Sequences")
+```
+
+# Plot- FastQC Percent Fails
+```{r}
+ggplot(trimmedseqs, aes(x = Sample, y = FastQC_mqc.generalstats.fastqc.percent_fails)) +
+  geom_bar(stat = "identity", position = "stack", fill = "deepskyblue4", color = "black", width = NULL) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1.0, size = 10),
+        axis.text.y = element_text (size = 12)) + 
+  theme(plot.title = element_text(size = 16, hjust = 0.5)) +
+  theme(panel.background = element_rect(fill = "white")) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) + 
+  labs(title = "Percent Fails with Trimmed Sequences", x = "Sample", y = "Percent Fails")
+```
+
+# Mean value FastQC Percent GC Content
+```{r}
+mean_fastqcperc_gc <- mean(trimmedseqs$FastQC_mqc.generalstats.fastqc.percent_gc, na.rm = TRUE)
+print(mean_fastqcperc_gc)
+```
+
+# Mean value FastQC Total Sequences
+```{r}
+mean_total_seqs <- mean(trimmedseqs$FastQC_mqc.generalstats.fastqc.total_sequences, na.rm = TRUE)
+print(mean_total_seqs)
+```
+
+
+
+
